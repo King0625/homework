@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-
+use App\User;
 
 class UserAuth
 {
@@ -19,7 +19,12 @@ class UserAuth
         $data = json_decode(request()->getContent());
         $email = $data->email;
         $password = $data->password;
-        dd($data);
+        // dd($data);
+        $user = User::where('email', $email)->where('password', $password)->first();
+        // dd($user);
+        if(is_null($user)){
+            return response()->json(['message' => 'Authentication error!'], 401);
+        }
         return $next($request);
     }
 }
