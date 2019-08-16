@@ -15,11 +15,11 @@ class UsersController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id);
-        if(is_null($user)){
-            return response()->json(['message' => 'User not found!'], 404);
+        if($this->exist($id)){
+            $user = User::find($id);
+            return response()->json($user, 200);
         }
-        return response()->json($user, 200);
+        return response()->json(['message' => 'User not found!!'], 404);
     }
 
     public function store(Request $request)
@@ -48,5 +48,10 @@ class UsersController extends Controller
     public function destroy()
     {
         //
+    }
+
+    private function exist($id){
+        $user = User::find($id);
+        return !is_null($user);
     }
 }
