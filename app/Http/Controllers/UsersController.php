@@ -40,9 +40,26 @@ class UsersController extends Controller
         return response()->json($user, 201);
     }
 
-    public function update()
+    public function update(Request $request, $id)
     {
-        //
+        $rules = [
+            'name' => 'min:2|max:256',
+            // 'email' => 'email|max:256|unique:users'. ($id ? ",id,$id" : ''),
+            'email' => 'email|max:256|unique:users,email,'.$id,
+            'superuser' => 'boolean',
+            'password' => 'min:6|max:12',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+
+        if($this->exist($id)){
+            $user = User::find($id);
+            $user->update($request->all());
+            return response()->json($user, 200);
+        }
     }
 
     public function destroy()
