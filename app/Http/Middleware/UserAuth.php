@@ -19,7 +19,7 @@ class UserAuth
         $data = json_decode(request()->getContent());
         $email = $data->auth_email;
         $password = $data->auth_password;
-        dd($data);
+        // dd($data);
         $user = User::where('email', $email)->where('password', $password)->first();
         // dd($user);
         if(is_null($user)){
