@@ -62,9 +62,14 @@ class UsersController extends Controller
         }
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        //
+        if($this->exist($id)){
+            $user = User::find($id);
+            $user->delete();
+            return response()->json(['message' => 'User deleted successfully!'], 204);
+        }
+        return response()->json(['messgae' => 'User not found'], 404);
     }
 
     private function exist($id){
