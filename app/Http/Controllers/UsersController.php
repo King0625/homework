@@ -10,7 +10,7 @@ class UsersController extends Controller
 {
     public function index()
     {
-        //
+        return response()->json(User::get(), 200);
     }
 
     public function show()
