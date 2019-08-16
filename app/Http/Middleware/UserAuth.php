@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
+
 class UserAuth
 {
     /**
@@ -15,6 +16,10 @@ class UserAuth
      */
     public function handle($request, Closure $next)
     {
+        $data = json_decode(request()->getContent());
+        $email = $data->email;
+        $password = $data->password;
+        dd($data);
         return $next($request);
     }
 }
