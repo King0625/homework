@@ -10,10 +10,10 @@ class UsersController extends Controller
 {
     public function index()
     {
-        $user = request()->get('auth_user');
+        $auth_user = request()->get('auth_user');
         
         // dd($user['id']);
-        if($user['superuser']){
+        if($auth_user['superuser']){
             return response()->json(User::get(), 200);
         }
         return response()->json(['message' => 'Authentication error!'], 401);        
@@ -21,11 +21,21 @@ class UsersController extends Controller
 
     public function show($id)
     {
-        if($this->exist($id)){
-            $user = User::find($id);
+        $auth_user = request()->get('auth_user');
+        $user = User::find($id);
+
+        // dd($user['id']);
+        if($auth_user['superuser']){
+            if($this->exist($id)){
+                return response()->json($user, 200);
+            }else{
+                return response()->json(['message' => 'User not found!!'], 404);
+            }
+        }elseif($auth_user['id'] == $id){
             return response()->json($user, 200);
+        }else{
+            return response()->json(['message' => 'Authentication error!'], 401);
         }
-        return response()->json(['message' => 'User not found!!'], 404);
     }
 
     public function store(Request $request)
@@ -48,6 +58,7 @@ class UsersController extends Controller
 
     public function update(Request $request, $id)
     {
+        /* Validation */
         $rules = [
             'name' => 'min:2|max:256',
             // 'email' => 'email|max:256|unique:users'. ($id ? ",id,$id" : ''),
@@ -61,21 +72,45 @@ class UsersController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        if($this->exist($id)){
-            $user = User::find($id);
+        /* Authentication */
+        $auth_user = request()->get('auth_user');
+        $user = User::find($id);
+
+        if($auth_user['superuser']){
+            if($this->exist($id)){
+                $user->update($request->all());
+                return response()->json($user, 200);
+            }else{
+                return response()->json(['message' => 'User not found!'], 404);
+            }
+        }elseif($auth_user['id'] == $id){
             $user->update($request->all());
             return response()->json($user, 200);
+        }else{
+            return response()->json(['message' => 'Authentication error!'], 401);
         }
+
     }
 
     public function destroy($id)
     {
-        if($this->exist($id)){
-            $user = User::find($id);
+        $auth_user = request()->get('auth_user');
+        $user = User::find($id);
+
+        if($auth_user['superuser']){
+            if($this->exist($id)){
+                $user->delete();
+                return response()->json(['message' => 'User deleted successfully!'], 204);
+            }else{
+                return response()->json(['messgae' => 'User not found'], 404);
+            }
+        }elseif($auth_user['id'] == $id){
             $user->delete();
             return response()->json(['message' => 'User deleted successfully!'], 204);
+        }else{
+            return response()->json(['message' => 'Authentication error'], 401);
         }
-        return response()->json(['messgae' => 'User not found'], 404);
+        
     }
 
     private function exist($id){
