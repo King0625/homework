@@ -10,7 +10,13 @@ class UsersController extends Controller
 {
     public function index()
     {
-        return response()->json(User::get(), 200);
+        $user = request()->get('auth_user');
+        
+        // dd($user['id']);
+        if($user['superuser']){
+            return response()->json(User::get(), 200);
+        }
+        return response()->json(['message' => 'Authentication error!'], 401);        
     }
 
     public function show($id)

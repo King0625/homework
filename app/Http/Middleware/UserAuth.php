@@ -25,6 +25,7 @@ class UserAuth
         if(is_null($user)){
             return response()->json(['message' => 'Authentication error!'], 401);
         }
+        $request->attributes->set('auth_user', $user);
         return $next($request);
     }
 }
