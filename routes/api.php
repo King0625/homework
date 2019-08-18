@@ -18,6 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('user', 'UsersController',
-['except' => ['store']])->middleware('basic.auth');
+['except' => ['store']]);
 
 Route::apiResource('user', 'UsersController', ['only' => ['store']]);
