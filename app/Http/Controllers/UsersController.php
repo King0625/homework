@@ -49,7 +49,7 @@ class UsersController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if($validator->fails()){
-            return response()->json(['message' => 'Request error!!'], 400);
+            return response()->json($validator->errors(), 400);
         }
 
         $user = User::create($request->all());
