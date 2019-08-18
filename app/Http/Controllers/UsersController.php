@@ -54,7 +54,7 @@ class UsersController extends Controller
         $data = $request->all();
         $data['superuser'] = User::REGULAR_USER;
 
-        $user = User::create($request->all());
+        $user = User::create($data);
         return response()->json($user, 201);
     }
 
