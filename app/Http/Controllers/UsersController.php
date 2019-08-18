@@ -43,7 +43,7 @@ class UsersController extends Controller
         $rules = [
             'name' => 'required|min:2|max:256',
             'email' => 'required|email|max:256|unique:users',
-            'superuser' => 'required|boolean',
+            // 'superuser' => 'required|boolean',
             'password' => 'required|min:6|max:12|confirmed',
         ];
 
@@ -51,6 +51,8 @@ class UsersController extends Controller
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
+        $data = $request->all();
+        $data['superuser'] = User::REGULAR_USER;
 
         $user = User::create($request->all());
         return response()->json($user, 201);
