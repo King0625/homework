@@ -53,7 +53,9 @@ class UsersController extends Controller
         }
 
         $user = User::create($request->all());
-        return response()->json($user, 201);
+        $accessToken = $user->createToken('authToken')->accessToken;
+        // return response()->json($user, 201);
+        return response()->json(['user' => $user, 'access_token' => $accessToken], 201);
     }
 
     public function update(Request $request, $id)
