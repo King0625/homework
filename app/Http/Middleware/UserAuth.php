@@ -16,10 +16,13 @@ class UserAuth
      */
     public function handle($request, Closure $next)
     {
-        $data = json_decode(request()->getContent());
-        $email = $data->auth_email;
-        $password = $data->auth_password;
-        // dd($data);
+        // $data = json_decode(request()->getContent());
+        // $email = $data->auth_email;
+        // $password = $data->auth_password;
+
+        $email = $request->header('auth_email');
+        $password = $request->header('auth_password');
+        // dd($password);
         $user = User::where('email', $email)->where('password', $password)->first();
         // dd($user);
         if(is_null($user)){
