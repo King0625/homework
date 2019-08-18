@@ -44,7 +44,7 @@ class UsersController extends Controller
             'name' => 'required|min:2|max:256',
             'email' => 'required|email|max:256|unique:users',
             'superuser' => 'required|boolean',
-            'password' => 'required|min:6|max:12',
+            'password' => 'required|min:6|max:12|confirmed',
         ];
 
         $validator = Validator::make($request->all(), $rules);
