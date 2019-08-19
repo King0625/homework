@@ -9,6 +9,16 @@ use Illuminate\Support\Str;
 
 class UsersController extends Controller
 {
+    public function login(Request $request){
+        $email = $request->auth_email;
+        $password = $request->auth_password;
+        $user = User::where('email', $email)->where('password', $password);
+        if(!is_null($user)){
+            return response()->json(['message' => 'Login successfully!', 'api_token' => $user->api_token], 200);
+        }
+        return response()->json(['message' => 'Authentication error!'], 401);
+    }
+
     public function index()
     {
         $auth_user = request()->get('auth_user');
@@ -57,7 +67,7 @@ class UsersController extends Controller
         $data['api_token'] = Str::random(60);
 
         $user = User::create($data);
-        return response()->json(['data' => $user], 201);
+        return response()->json(['data' => $user, 'api_token' => $user['api_token']], 201);
     }
 
     public function update(Request $request, $id)
