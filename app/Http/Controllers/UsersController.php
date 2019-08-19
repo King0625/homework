@@ -63,7 +63,7 @@ class UsersController extends Controller
             return response()->json($validator->errors(), 400);
         }
         $data = $request->all();
-        $data['superuser'] = User::ADMIN_USER;
+        $data['superuser'] = User::REGULAR_USER;
         $data['api_token'] = Str::random(60);
 
         $user = User::create($data);
