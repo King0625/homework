@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class UsersController extends Controller
 {
@@ -53,6 +54,7 @@ class UsersController extends Controller
         }
         $data = $request->all();
         $data['superuser'] = User::REGULAR_USER;
+        $data['api_token'] = Str::random(60);
 
         $user = User::create($data);
         return response()->json(['data' => $user], 201);
