@@ -14,7 +14,7 @@ class UsersController extends Controller
         
         // dd($user['id']);
         if($auth_user['superuser']){
-            return response()->json(User::get(), 200);
+            return response()->json(['data' => User::get()], 200);
         }
         return response()->json(['message' => 'Authentication error!'], 401);        
     }
@@ -32,7 +32,7 @@ class UsersController extends Controller
                 return response()->json(['message' => 'User not found!!'], 404);
             }
         }elseif($auth_user['id'] == $id){
-            return response()->json($user, 200);
+            return response()->json(['data' => $user], 200);
         }else{
             return response()->json(['message' => 'Authentication error!'], 401);
         }
@@ -55,7 +55,7 @@ class UsersController extends Controller
         $data['superuser'] = User::REGULAR_USER;
 
         $user = User::create($data);
-        return response()->json($user, 201);
+        return response()->json(['data' => $user], 201);
     }
 
     public function update(Request $request, $id)
@@ -81,13 +81,13 @@ class UsersController extends Controller
         if($auth_user['superuser']){
             if($this->exist($id)){
                 $user->update($request->all());
-                return response()->json($user, 200);
+                return response()->json(['data' => $user], 200);
             }else{
                 return response()->json(['message' => 'User not found!'], 404);
             }
         }elseif($auth_user['id'] == $id){
             $user->update($request->all());
-            return response()->json($user, 200);
+            return response()->json(['data' => $user], 200);
         }else{
             return response()->json(['message' => 'Authentication error!'], 401);
         }
@@ -102,7 +102,7 @@ class UsersController extends Controller
         if($auth_user['superuser']){
             if($this->exist($id)){
                 $user->delete();
-                return response()->json(['message' => 'User deleted successfully!'], 204);
+                return response()->json(null, 204);
             }else{
                 return response()->json(['messgae' => 'User not found'], 404);
             }
