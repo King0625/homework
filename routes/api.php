@@ -19,6 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('login', 'UsersController@login');
 Route::apiResource('user', 'UsersController',
-['except' => ['store']])->middleware('user.auth');
+['except' => ['store']])->middleware('token.auth');
 
 Route::apiResource('user', 'UsersController', ['only' => ['store']]);
