@@ -21,7 +21,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        $auth_user = request()->get('auth_user');
+        $auth_user = request()->get('auth_user')->first();
         
         // dd($user['id']);
         if($auth_user['superuser']){
@@ -32,7 +32,7 @@ class UsersController extends Controller
 
     public function show($id)
     {
-        $auth_user = request()->get('auth_user');
+        $auth_user = request()->get('auth_user')->first();
         $user = User::find($id);
 
         // dd($user['id']);
@@ -63,7 +63,7 @@ class UsersController extends Controller
             return response()->json($validator->errors(), 400);
         }
         $data = $request->all();
-        $data['superuser'] = User::REGULAR_USER;
+        $data['superuser'] = User::ADMIN_USER;
         $data['api_token'] = Str::random(60);
 
         $user = User::create($data);
@@ -87,7 +87,7 @@ class UsersController extends Controller
         }
 
         /* Authentication */
-        $auth_user = request()->get('auth_user');
+        $auth_user = request()->get('auth_user')->first();
         $user = User::find($id);
 
         if($auth_user['superuser']){
@@ -108,7 +108,7 @@ class UsersController extends Controller
 
     public function destroy($id)
     {
-        $auth_user = request()->get('auth_user');
+        $auth_user = request()->get('auth_user')->first();
         $user = User::find($id);
 
         if($auth_user['superuser']){
