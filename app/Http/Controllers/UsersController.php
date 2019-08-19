@@ -12,7 +12,7 @@ class UsersController extends Controller
     public function login(Request $request){
         $email = $request->auth_email;
         $password = $request->auth_password;
-        $user = User::where('email', $email)->where('password', $password);
+        $user = User::where('email', $email)->where('password', $password)->first();
         if(!is_null($user)){
             return response()->json(['message' => 'Login successfully!', 'api_token' => $user->api_token], 200);
         }
