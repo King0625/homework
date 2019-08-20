@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('login', 'UsersController@login');
+Route::post('register', 'UsersController@store');
+
 Route::apiResource('user', 'UsersController',
 ['except' => ['store']])->middleware('token.auth');
-
-Route::post('register', 'UsersController@store');

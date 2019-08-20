@@ -14,15 +14,19 @@ class UsersController extends Controller
         $password = $request->auth_password;
         $user = User::where('email', $email)->where('password', $password)->first();
         if(!is_null($user)){
+            /* Renew an api_token every time user login?? */
+            // $user->update(['api_token' => Str::random(60)]);
             return response()->json(['message' => 'Login successfully!', 'api_token' => $user->api_token], 200);
         }
         return response()->json(['message' => 'Authentication error!'], 401);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $auth_user = request()->get('auth_user')->first();
-        
+        // $token = $request->header('api_token');
+        // $auth_user = User::where('api_token', $token)->get(); 
+
         // dd($user['id']);
         if($auth_user['superuser']){
             return response()->json(['data' => User::get()], 200);
@@ -114,13 +118,14 @@ class UsersController extends Controller
         if($auth_user['superuser']){
             if($this->exist($id)){
                 $user->delete();
-                return response()->json(null, 204);
+                // return response()->json(['message' => 'User deleted'], 204);
+                return response()->json(['message' => 'User deleted'], 200);
             }else{
                 return response()->json(['messgae' => 'User not found'], 404);
             }
         }elseif($auth_user['id'] == $id){
             $user->delete();
-            return response()->json(['message' => 'User deleted successfully!'], 204);
+            return response()->json(['message' => 'User deleted successfully!'], 200);
         }else{
             return response()->json(['message' => 'Authentication error'], 401);
         }
