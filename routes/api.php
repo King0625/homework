@@ -22,3 +22,4 @@ Route::post('register', 'UsersController@store');
 
 Route::apiResource('user', 'UsersController',
 ['except' => ['store']])->middleware('token.auth');
+

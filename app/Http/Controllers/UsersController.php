@@ -16,9 +16,9 @@ class UsersController extends Controller
         if(!is_null($user)){
             /* Renew an api_token every time user login?? */
             // $user->update(['api_token' => Str::random(60)]);
-            return response()->json(['message' => 'Login successfully!', 'api_token' => $user->api_token], 200);
+            return response(['message' => 'Login successfully!', 'api_token' => $user->api_token], 200);
         }
-        return response()->json(['message' => 'Authentication error!'], 401);
+        return response(['message' => 'Authentication error!'], 401);
     }
 
     public function index(Request $request)
@@ -29,9 +29,9 @@ class UsersController extends Controller
 
         // dd($user['id']);
         if($auth_user['superuser']){
-            return response()->json(['data' => User::get()], 200);
+            return response(['data' => User::get()], 200);
         }
-        return response()->json(['message' => 'Authentication error!'], 401);        
+        return response(['message' => 'Authentication error!'], 401);        
     }
 
     public function show($id)
@@ -42,14 +42,14 @@ class UsersController extends Controller
         // dd($user['id']);
         if($auth_user['superuser']){
             if($this->exist($id)){
-                return response()->json($user, 200);
+                return response($user, 200);
             }else{
-                return response()->json(['message' => 'User not found!!'], 404);
+                return response(['message' => 'User not found!!'], 404);
             }
         }elseif($auth_user['id'] == $id){
-            return response()->json(['data' => $user], 200);
+            return response(['data' => $user], 200);
         }else{
-            return response()->json(['message' => 'Authentication error!'], 401);
+            return response(['message' => 'Authentication error!'], 401);
         }
     }
 
@@ -64,14 +64,14 @@ class UsersController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if($validator->fails()){
-            return response()->json($validator->errors(), 400);
+            return response($validator->errors(), 400);
         }
         $data = $request->all();
         $data['superuser'] = User::REGULAR_USER;
         $data['api_token'] = Str::random(60);
 
         $user = User::create($data);
-        return response()->json(['data' => $user, 'api_token' => $user['api_token']], 201);
+        return response(['data' => $user, 'api_token' => $user['api_token']], 201);
     }
 
     public function update(Request $request, $id)
@@ -87,7 +87,7 @@ class UsersController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if($validator->fails()){
-            return response()->json($validator->errors(), 400);
+            return response($validator->errors(), 400);
         }
 
         /* Authentication */
@@ -97,15 +97,15 @@ class UsersController extends Controller
         if($auth_user['superuser']){
             if($this->exist($id)){
                 $user->update($request->all());
-                return response()->json(['data' => $user], 200);
+                return response(['data' => $user], 200);
             }else{
-                return response()->json(['message' => 'User not found!'], 404);
+                return response(['message' => 'User not found!'], 404);
             }
         }elseif($auth_user['id'] == $id){
             $user->update($request->all());
-            return response()->json(['data' => $user], 200);
+            return response(['data' => $user], 200);
         }else{
-            return response()->json(['message' => 'Authentication error!'], 401);
+            return response(['message' => 'Authentication error!'], 401);
         }
 
     }
@@ -119,15 +119,15 @@ class UsersController extends Controller
             if($this->exist($id)){
                 $user->delete();
                 // return response()->json(['message' => 'User deleted'], 204);
-                return response()->json(['message' => 'User deleted'], 200);
+                return response(['message' => 'User deleted'], 200);
             }else{
-                return response()->json(['messgae' => 'User not found'], 404);
+                return response(['messgae' => 'User not found'], 404);
             }
         }elseif($auth_user['id'] == $id){
             $user->delete();
-            return response()->json(['message' => 'User deleted successfully!'], 200);
+            return response(['message' => 'User deleted successfully!'], 200);
         }else{
-            return response()->json(['message' => 'Authentication error'], 401);
+            return response(['message' => 'Authentication error'], 401);
         }
         
     }
