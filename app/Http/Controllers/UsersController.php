@@ -96,7 +96,8 @@ class UsersController extends Controller
 
         if($auth_user['superuser']){
             if($this->exist($id)){
-                $user->update($request->all());
+                $data = $request->all();
+                $user->update($data);
                 return response(['data' => $user], 200);
             }else{
                 return response(['message' => 'User not found!'], 404);
