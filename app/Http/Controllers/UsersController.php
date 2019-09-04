@@ -4,19 +4,31 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
+    public function login(){ 
+        if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
+            $user = Auth::user(); 
+            $success['token'] =  $user->createToken('authToken')->accessToken; 
+            return response()->json(['success' => $success]); 
+        } 
+        else{ 
+            return response()->json(['error'=>'Unauthorised'], 401); 
+        } 
+    }
+
     public function index()
     {
-        $auth_user = request()->get('auth_user');
+        // $auth_user = request()->get('auth_user');
         
-        // dd($user['id']);
-        if($auth_user['superuser']){
+        // // dd($user['id']);
+        // if($auth_user['superuser']){
             return response()->json(User::get(), 200);
-        }
-        return response()->json(['message' => 'Authentication error!'], 401);        
+        // }
+        // return response()->json(['message' => 'Authentication error!'], 401);        
     }
 
     public function show($id)
@@ -38,24 +50,23 @@ class UsersController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
-        $rules = [
-            'name' => 'required|min:2|max:256',
-            'email' => 'required|email|max:256|unique:users',
-            'superuser' => 'required|boolean',
-            'password' => 'required|min:6|max:12',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-        if($validator->fails()){
-            return response()->json($validator->errors(), 400);
+    public function register(Request $request) 
+    { 
+        $validator = Validator::make($request->all(), [ 
+            'name' => 'required', 
+            'email' => 'required|email', 
+            'password' => 'required|confirmed', 
+            'superuser' => 'required|boolean', 
+        ]);
+        if ($validator->fails()) { 
+            return response()->json(['error'=>$validator->errors()], 401);            
         }
-
-        $user = User::create($request->all());
-        $accessToken = $user->createToken('authToken')->accessToken;
-        // return response()->json($user, 201);
-        return response()->json(['user' => $user, 'access_token' => $accessToken], 201);
+        $input = $request->all(); 
+        $input['password'] = bcrypt($input['password']); 
+        $user = User::create($input); 
+        $success['token'] =  $user->createToken('authToken')->accessToken; 
+        $success['name'] =  $user->name;
+        return response()->json(['success'=>$success]); 
     }
 
     public function update(Request $request, $id)
